@@ -8,10 +8,19 @@ USurvivorGameInstance::USurvivorGameInstance()
 
 }
 
+void USurvivorGameInstance::GetPlayerExperienceLastStage(int32& OutLevel, int32& OutExperience)
+{
+	OutLevel = PlayerLevelLastStage;
+	OutExperience = PlayerExpLastStage;
+}
+
 void USurvivorGameInstance::StartNewRun()
 {
 	LastRunResult = FSurvivorRunResult();
 	CurrentStageIndex = 0;
+	PlayerExpLastStage = 0;
+	PlayerLevelLastStage = 1;
+
 	//기본값, BP에서 설정
 	if (StageLevelNames.Num() == 0)
 	{

@@ -3,7 +3,7 @@
 
 #include "WeaponComponent.h"
 #include "WeaponProjectile.h"
-#include "AiRtanny.h"
+#include "SurvivorEnemyBase.h"
 #include "Kismet/GameplayStatics.h"
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
@@ -37,7 +37,7 @@ AActor* UWeaponComponent::FindNearestEnemy() const
 	if (!Owner)
 		return nullptr;
 	TArray<AActor*>Enemies;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAiRtanny::StaticClass(), Enemies);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASurvivorEnemyBase::StaticClass(), Enemies);
 	
 	AActor* NearestEnemy = nullptr;
 	float NearestDistSq = AttackRange * AttackRange;

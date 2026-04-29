@@ -9,6 +9,11 @@ UExperienceComponent::UExperienceComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
+void UExperienceComponent::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 void UExperienceComponent::AddExp(int32 Amount)
 {
 	if (Amount <= 0)

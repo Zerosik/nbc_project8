@@ -120,6 +120,11 @@ void ASurvivorGameMode::HandleStageClear()
 		ShowFinalResult(true);
 		return;
 	}
+	Ahomework8Character* Player = Cast<Ahomework8Character>(UGameplayStatics::GetPlayerPawn(this, 0));
+	if (Player) {
+		GI->PlayerExpLastStage = Player->ExperienceComponent->CurrentExp;
+		GI->PlayerLevelLastStage = Player->ExperienceComponent->CurrentLevel;
+	}
 
 	if (GI->HasNextStage())
 	{
@@ -148,6 +153,9 @@ void ASurvivorGameMode::HandlePlayerDead()
 	if (GI)
 	{
 		GI->SetRunVictory(false);
+		GI->PlayerExpLastStage = 0;
+		GI->PlayerLevelLastStage = 1;
+
 	}
 
 	ShowFinalResult(false);

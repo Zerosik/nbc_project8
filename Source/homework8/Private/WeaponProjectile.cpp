@@ -46,7 +46,7 @@ void AWeaponProjectile::OnProjectileOverlap(
     bool bFromSweep,
     const FHitResult& SweepResult)
 {
-    AAiRtanny* Enemy = Cast<AAiRtanny>(OtherActor);
+    ASurvivorEnemyBase* Enemy = Cast<ASurvivorEnemyBase>(OtherActor);
     if (!Enemy)
         return;
     Enemy->HealthComponent->TakeDamageValue(Damage);

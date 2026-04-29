@@ -4,26 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "SurvivorEnemyBase.h"
-#include "AiRtanny.generated.h"
+#include "Enemy_Bat.generated.h"
 
 UCLASS()
-class HOMEWORK8_API AAiRtanny : public ASurvivorEnemyBase
+class HOMEWORK8_API AEnemy_Bat : public ASurvivorEnemyBase
 {
 	GENERATED_BODY()
-
 public:
-	AAiRtanny();
-	virtual void Tick(float DeltaTime) override;
+	AEnemy_Bat();
+	
+	virtual void Tick(float DeltaSeconds) override;
+
 
 protected:
 	virtual void BeginPlay() override;
 
-
 private:
 	UPROPERTY()
-	AActor* TargetPlayer;
-	
-	void MoveToPlayer(float DeltaTime);
+	FVector direction;
+
+	void MoveToDirection(float DeltaTime);
 
 	void HandleDeath() override;
 
@@ -35,5 +35,4 @@ private:
 		bool bFromSweep,
 		const FHitResult& SweepResult
 	) override;
-
 };

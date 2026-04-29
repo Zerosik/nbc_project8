@@ -17,6 +17,8 @@ class HOMEWORK8_API UExperienceComponent : public UActorComponent
 
 public:
 	UExperienceComponent();
+
+	void BeginPlay() override;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 CurrentLevel = 1;
@@ -36,8 +38,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddExp(int32 NewLevel);
 
-private:
 	int32 CalcRequiredExp(int32 Level) const;
+
+private:
 
 
 };

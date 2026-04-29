@@ -23,6 +23,8 @@ void UGameHUDWidget::NativeConstruct()
     //Player.HealthComponent->OnHealthChanged.AddDynamic(this, &UGameHUDWidget::Update)
     Player->ExperienceComponent->OnExpChanged.AddDynamic(this, &UGameHUDWidget::UpdateExpBar);
 
+    
+
     ASurvivorGameState* SGS = GetWorld()->GetGameState<ASurvivorGameState>();
     if (SGS) {
         SGS->OnKillCountChanged.AddDynamic(this, &UGameHUDWidget::UpdateKillCountText);
@@ -31,11 +33,8 @@ void UGameHUDWidget::NativeConstruct()
     }
     if (USurvivorGameInstance* GI = Cast<USurvivorGameInstance>(GetGameInstance())) {
         UpdateStageText(GI->GetCurrentStageNumber());
+        UpdateExpBar(GI->PlayerExpLastStage, Player->ExperienceComponent->CalcRequiredExp(GI->PlayerLevelLastStage), GI->PlayerLevelLastStage);
     }
-
-    //if (ASurvivorGameMode* SGM = Cast<ASurvivorGameMode>(UGameplayStatics::GetGameMode(this))) {
-    //    SGM->OnStageChanged.AddDynamic(this, &UGameHUDWidget::UpdateStageText);
-    //}
 }
 
 void UGameHUDWidget::UpdateExpBar(int32 CurrentExp, int32 RequiredExp, int32 Level)

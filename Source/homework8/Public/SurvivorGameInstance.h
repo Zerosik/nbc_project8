@@ -34,6 +34,12 @@ class HOMEWORK8_API USurvivorGameInstance : public UGameInstance
 public:
 	USurvivorGameInstance();
 
+    
+    UPROPERTY(BlueprintReadOnly)
+    int32 PlayerExpLastStage;
+    UPROPERTY(BlueprintReadOnly)
+    int32 PlayerLevelLastStage;
+
     UPROPERTY(BlueprintReadOnly)
 	int32 TotalGold; //영구적 업그레이드에 사용
 
@@ -45,6 +51,9 @@ public:
 
     UPROPERTY(BlueprintReadOnly)
     int32 CurrentStageIndex = 0;
+
+    UFUNCTION(BlueprintCallable)
+    void GetPlayerExperienceLastStage(int32& OutLevel, int32& OutExperience);
 
     UFUNCTION(BlueprintCallable)
     void StartNewRun(); //result 초기화 및 처음부터

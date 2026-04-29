@@ -77,6 +77,7 @@ void ASurvivorPlayerController::OnManualAttackTriggered(const FInputActionValue&
 {
     return;
     /*
+    * 플레이어 수동공격(20Minutes until dawn  방식)
     float DeltaTime = GetWorld()->GetDeltaSeconds();
 	FHitResult TraceResult;
     GetHitResultUnderCursor(ECC_Visibility, true, TraceResult);
@@ -108,7 +109,7 @@ void ASurvivorPlayerController::OnManualAttackTriggered(const FInputActionValue&
         controlledPawn->SetActorRotation(FRotator(0.0f, SmoothRotation.Yaw, 0.0f));
 
     }
-    */
+         */
 }
 
 void ASurvivorPlayerController::ShowLevelUPWidget()

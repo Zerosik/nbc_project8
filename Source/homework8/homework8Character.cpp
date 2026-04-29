@@ -15,6 +15,7 @@
 #include "HealthComponent.h"
 #include "ExperienceComponent.h"
 #include "WeaponComponent.h"
+#include <SurvivorGameInstance.h>
 Ahomework8Character::Ahomework8Character()
 {
 	// Set size for player capsule
@@ -61,6 +62,11 @@ void Ahomework8Character::BeginPlay()
 	bIsManuallyControlled = false;
 	if (HealthComponent) {
 		HealthComponent->OnDeath.AddDynamic(this, &Ahomework8Character::HandleDeath);
+	}
+	if (ExperienceComponent) {
+		USurvivorGameInstance* GI = Cast<USurvivorGameInstance>(GetGameInstance());
+		ExperienceComponent->CurrentLevel = GI->PlayerLevelLastStage;
+		ExperienceComponent->CurrentExp = GI->PlayerExpLastStage;
 	}
 
 }
