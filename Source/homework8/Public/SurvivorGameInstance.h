@@ -27,6 +27,25 @@ struct FSurvivorRunResult
     int32 ClearedStageCount = 0;
 };
 
+USTRUCT(BlueprintType)
+struct FPlayerRunStatus
+{
+    GENERATED_BODY()
+
+    UPROPERTY(BlueprintReadWrite)
+    int32 Level = 1;
+
+    UPROPERTY(BlueprintReadWrite)
+    int32 CurrentExp = 0;
+
+    UPROPERTY(BlueprintReadWrite)
+    int32 RequiredExp = 5;
+
+    UPROPERTY(BlueprintReadWrite)
+    float CurrentHealth = 100.0f;
+
+};
+
 UCLASS()
 class HOMEWORK8_API USurvivorGameInstance : public UGameInstance
 {
@@ -34,11 +53,8 @@ class HOMEWORK8_API USurvivorGameInstance : public UGameInstance
 public:
 	USurvivorGameInstance();
 
-    
     UPROPERTY(BlueprintReadOnly)
-    int32 PlayerExpLastStage;
-    UPROPERTY(BlueprintReadOnly)
-    int32 PlayerLevelLastStage;
+    FPlayerRunStatus PrevPlayerStatus;
 
     UPROPERTY(BlueprintReadOnly)
 	int32 TotalGold; //영구적 업그레이드에 사용
@@ -51,9 +67,12 @@ public:
 
     UPROPERTY(BlueprintReadOnly)
     int32 CurrentStageIndex = 0;
+    
+    UFUNCTION(BlueprintCallable)
+    void SetPrevPlayerStatus();
 
     UFUNCTION(BlueprintCallable)
-    void GetPlayerExperienceLastStage(int32& OutLevel, int32& OutExperience);
+    FPlayerRunStatus GetPrevPlayerStatus();
 
     UFUNCTION(BlueprintCallable)
     void StartNewRun(); //result 초기화 및 처음부터

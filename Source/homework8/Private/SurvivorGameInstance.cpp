@@ -2,24 +2,38 @@
 
 
 #include "SurvivorGameInstance.h"
+#include "Kismet/GameplayStatics.h"
+#include "ExperienceComponent.h"
+#include "HealthComponent.h"
+#include "homework8/homework8Character.h"
 
 USurvivorGameInstance::USurvivorGameInstance()
 {
 
 }
 
-void USurvivorGameInstance::GetPlayerExperienceLastStage(int32& OutLevel, int32& OutExperience)
+void USurvivorGameInstance::SetPrevPlayerStatus()
 {
-	OutLevel = PlayerLevelLastStage;
-	OutExperience = PlayerExpLastStage;
+	Ahomework8Character* Character = Cast<Ahomework8Character>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	if (Character) {
+
+		PrevPlayerStatus.Level = Character->ExperienceComponent->CurrentLevel;
+		PrevPlayerStatus.CurrentExp = Character->ExperienceComponent->CurrentExp;
+		PrevPlayerStatus.RequiredExp = Character->ExperienceComponent->RequiredExp;
+		PrevPlayerStatus.CurrentHealth = Character->HealthComponent->CurrentHealth;
+	}
+}
+
+FPlayerRunStatus USurvivorGameInstance::GetPrevPlayerStatus()
+{
+	return PrevPlayerStatus;
 }
 
 void USurvivorGameInstance::StartNewRun()
 {
 	LastRunResult = FSurvivorRunResult();
 	CurrentStageIndex = 0;
-	PlayerExpLastStage = 0;
-	PlayerLevelLastStage = 1;
+	PrevPlayerStatus = FPlayerRunStatus();
 
 	//기본값, BP에서 설정
 	if (StageLevelNames.Num() == 0)

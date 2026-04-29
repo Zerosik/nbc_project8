@@ -60,13 +60,17 @@ void Ahomework8Character::BeginPlay()
 {
 	Super::BeginPlay();
 	bIsManuallyControlled = false;
+
+	USurvivorGameInstance* GI = Cast<USurvivorGameInstance>(GetGameInstance());
+	FPlayerRunStatus PlayerStatus = GI->GetPrevPlayerStatus();
 	if (HealthComponent) {
+		HealthComponent->CurrentHealth = PlayerStatus.CurrentHealth;
 		HealthComponent->OnDeath.AddDynamic(this, &Ahomework8Character::HandleDeath);
 	}
 	if (ExperienceComponent) {
-		USurvivorGameInstance* GI = Cast<USurvivorGameInstance>(GetGameInstance());
-		ExperienceComponent->CurrentLevel = GI->PlayerLevelLastStage;
-		ExperienceComponent->CurrentExp = GI->PlayerExpLastStage;
+		ExperienceComponent->CurrentLevel = PlayerStatus.Level;
+		ExperienceComponent->CurrentExp = PlayerStatus.CurrentExp;
+		ExperienceComponent->RequiredExp = PlayerStatus.RequiredExp;
 	}
 
 }

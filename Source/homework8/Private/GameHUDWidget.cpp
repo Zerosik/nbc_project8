@@ -33,7 +33,9 @@ void UGameHUDWidget::NativeConstruct()
     }
     if (USurvivorGameInstance* GI = Cast<USurvivorGameInstance>(GetGameInstance())) {
         UpdateStageText(GI->GetCurrentStageNumber());
-        UpdateExpBar(GI->PlayerExpLastStage, Player->ExperienceComponent->CalcRequiredExp(GI->PlayerLevelLastStage), GI->PlayerLevelLastStage);
+        FPlayerRunStatus PlayerStatus = GI->GetPrevPlayerStatus();
+        UpdateExpBar(PlayerStatus.CurrentExp, PlayerStatus.RequiredExp, PlayerStatus.Level);
+   
     }
 }
 
