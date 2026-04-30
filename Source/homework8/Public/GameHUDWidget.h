@@ -29,7 +29,9 @@ protected:
 	UTextBlock* GoldTextbox;
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* KillCountTextbox;
-
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* EmenyLeftTextbox;
+	
 public:
 	UFUNCTION()
 	void UpdateExpBar(int32 CurrentExp, int32 MaxExp, int32 Level);

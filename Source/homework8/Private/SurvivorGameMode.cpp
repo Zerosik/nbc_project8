@@ -5,6 +5,7 @@
 #include "SurvivorPlayerController.h"
 #include "kismet/GameplayStatics.h"
 #include "EnemySpawner.h"
+#include "ItemSpawner.h"
 #include "SurvivorGameInstance.h"
 #include "ExperienceComponent.h"
 #include "homework8/homework8Character.h"
@@ -45,8 +46,24 @@ void ASurvivorGameMode::Tick(float DeltaTime)
 
 	if (SGS->RunState == ESurvivorRunState::Playing and
 		SGS->ElapsedTime >= ClearTime) {
-		//승리시간까지 살아남으면 엔드
-		EndRun(true);
+		if (EnemySpawner) {
+			EnemySpawner->StopSpawning();
+		}
+		if (ItemSpawner) {
+			ItemSpawner->StopSpawning();
+		}
+		if (EnemySpawner->GetCurrentEnemyCount() <= 0) {
+			if (bRunEnded)
+				return;
+			bRunEnded = true;
+
+			GetWorldTimerManager().SetTimer(EndRunTimer, FTimerDelegate::CreateLambda([&]()
+				{
+					EndRun(true);
+				}), 3, false);
+			
+
+		}
 	}
 
 }
@@ -109,6 +126,9 @@ void ASurvivorGameMode::StartRun()
 	if (EnemySpawner) {
 		EnemySpawner->StartSpawning();
 	}
+	if (ItemSpawner) {
+		ItemSpawner->StartSpawning();
+	}
 	if (APlayerController* PlayerController = GetWorld()->GetFirstPlayerController()) {
 		if (ASurvivorPlayerController* SPC = Cast<ASurvivorPlayerController>(PlayerController)) {
 			SPC->ShowGameHUD();
@@ -118,13 +138,16 @@ void ASurvivorGameMode::StartRun()
 
 void ASurvivorGameMode::EndRun(bool bVictory)
 {
-	if (bRunEnded)
-		return;
-	bRunEnded = true;
+	//if (bRunEnded)
+	//	return;
+	//bRunEnded = true;
 
-	if (EnemySpawner) {
-		EnemySpawner->StopSpawning();
-	}
+	//if (EnemySpawner) {
+	//	EnemySpawner->StopSpawning();
+	//}
+	//if (ItemSpawner) {
+	//	ItemSpawner->StopSpawning();
+	//}
 
 	if (bVictory) {
 		HandleStageClear();
@@ -150,14 +173,22 @@ void ASurvivorGameMode::BindPlayerEvents()
 
 void ASurvivorGameMode::CreateSpawnerIfNeeded()
 {
-	if (EnemySpawner || !SpawnerClass)
+	if (EnemySpawner || !EnemySpawnerClass)
 		return;
 
 	EnemySpawner = GetWorld()->SpawnActor<AEnemySpawner>(
-		SpawnerClass,
+		EnemySpawnerClass,
 		FVector::ZeroVector,
 		FRotator::ZeroRotator
 	);
+
+	if (ItemSpawnerClass) {
+		ItemSpawner = GetWorld()->SpawnActor<AItemSpawner>(
+			ItemSpawnerClass,
+				FVector::ZeroVector,
+				FRotator::ZeroRotator
+		);
+	}
 }
 
 void ASurvivorGameMode::HandleStageClear()

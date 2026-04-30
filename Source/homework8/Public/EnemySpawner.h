@@ -75,8 +75,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void StopSpawning();
-	
+
+	int32 GetCurrentEnemyCount() const;
+	void RemoveEnemy(AActor* EnemyInstance);
 private:
+	UPROPERTY();
+	TArray<AActor*> Enemies;
 	bool bSpawning = false;
 	float LastSpawnTime = -999.f;
 	
@@ -85,7 +89,6 @@ private:
 
 	void SpawnEnemy();
 	FVector GetRandomSpawnLocation() const;
-	int32 GetCurrentEnemyCount() const;
 
 	//Wave
 	void CheckWaveEvents();

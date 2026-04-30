@@ -8,6 +8,7 @@
 #include "homework8/homework8Character.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "EnemySpawner.h"
 
 // Sets default values
 ASurvivorEnemyBase::ASurvivorEnemyBase()
@@ -32,6 +33,14 @@ void ASurvivorEnemyBase::BeginPlay()
 		//#include "GameFramework/CharacterMovementComponent.h"
 		GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
 	}
+}
+
+void ASurvivorEnemyBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (MySpawner) {
+		MySpawner->RemoveEnemy(this);
+	}
+	Super::EndPlay(EndPlayReason);
 }
 
 

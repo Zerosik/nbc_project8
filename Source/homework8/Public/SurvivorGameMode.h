@@ -10,6 +10,7 @@ class AEnemySpawner;
 class Ahomework8Character;
 class UUpgradeDataAsset;
 class UUpgradeManager;
+class AItemSpawner;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStageChanged, int32, NewLevelIndex);
 
@@ -25,9 +26,13 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
     UUpgradeManager* UpgradeManager;
+    
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    TSubclassOf<AEnemySpawner> EnemySpawnerClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-    TSubclassOf< AEnemySpawner> SpawnerClass;
+    TSubclassOf<AItemSpawner> ItemSpawnerClass;
+
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float ClearTime = 30.f;
@@ -51,12 +56,14 @@ private:
     UPROPERTY()
     class AEnemySpawner* EnemySpawner;
     UPROPERTY()
+    class AItemSpawner* ItemSpawner;
+    UPROPERTY()
     Ahomework8Character* CachedPlayer;
 
     UPROPERTY()
     TArray<UUpgradeDataAsset*> CurrentUpgradeChoices;
     bool bRunEnded = false;
-
+    FTimerHandle EndRunTimer;
     void BindPlayerEvents();
 
     void CreateSpawnerIfNeeded();

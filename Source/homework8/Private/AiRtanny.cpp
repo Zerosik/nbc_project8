@@ -23,6 +23,11 @@ void AAiRtanny::BeginPlay()
 	TargetPlayer = UGameplayStatics::GetPlayerPawn(this, 0);
 }
 
+void AAiRtanny::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+}
+
 // Called every frame
 void AAiRtanny::Tick(float DeltaTime)
 {
