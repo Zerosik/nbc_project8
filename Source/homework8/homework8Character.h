@@ -9,7 +9,7 @@
 class UHealthComponent;
 class UExperienceComponent;
 class UWeaponComponent;
-
+class UWidgetComponent;
 UCLASS(Blueprintable)
 class Ahomework8Character : public ACharacter
 {
@@ -31,10 +31,8 @@ public:
 	UExperienceComponent* ExperienceComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UWeaponComponent* WeaponComponent;
-	
-
-
-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UWidgetComponent* HpBarWIdget;
 
 
 	UFUNCTION(BlueprintPure)
@@ -45,6 +43,9 @@ public:
 private:
 	UFUNCTION()
 	void HandleDeath();
+
+	UFUNCTION()
+	void UpdateHpBar(float CurrentHealth, float MaxHealth);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* TopDownCameraComponent;

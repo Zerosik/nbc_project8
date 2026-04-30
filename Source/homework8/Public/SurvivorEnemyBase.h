@@ -18,19 +18,21 @@ class HOMEWORK8_API ASurvivorEnemyBase : public ACharacter, public ISurvivorEnem
 public:	
 	// Sets default values for this actor's properties
 	ASurvivorEnemyBase();
+	virtual void BeginPlay() override;
+
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UHealthComponent* HealthComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float MaxHealth = 10;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float MoveSpeed = 250;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float ContractGamage = 5.f;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float DamageInterval = .5;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 ExpDrop = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Enemy Stats")
+	float MaxHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
+	float MoveSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
+	float ContractGamage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
+	float DamageInterval;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Enemy Stats")
+	int32 ExpDrop;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AExpGem> ExpGemClass;
 

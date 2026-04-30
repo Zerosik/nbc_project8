@@ -4,6 +4,7 @@
 #include "EnemySpawner.h"
 #include "Kismet/GameplayStatics.h"
 #include "AiRtanny.h"
+#include "HealthComponent.h"
 #include "SurvivorGameState.h"
 #include "Enemy_Bat.h"
 // Sets default values
@@ -58,6 +59,7 @@ void AEnemySpawner::SpawnEnemy()
 	);
 	//가끔 nullptr 강제스폰방법확인
 	if (SpawnedActor) {
+		SpawnedActor->HealthComponent->SetMaxHealth(SpawnedActor->HealthComponent->MaxHealth * EnemyHealthScale); ;
 		//기본 컨트롤러 미할당 시 움직이지 않음
 		SpawnedActor->SpawnDefaultController();
 	}
@@ -135,7 +137,7 @@ void AEnemySpawner::TriggerWaveEvent(FVSWaveSpawnEvent& WaveEvent)
 
 void AEnemySpawner::SpawnCircleWave(const FVSWaveSpawnEvent& WaveEvent)
 {
-	//광기의숲 1차보스전 그거
+	//광기의숲 1차보스몹 그거
 	if (!TargetPlayer || !WaveEvent.EnemyClass)
 	{
 		return;
@@ -156,13 +158,15 @@ void AEnemySpawner::SpawnCircleWave(const FVSWaveSpawnEvent& WaveEvent)
 		const FVector SpawnLocation = PlayerLocation + Direction * WaveEvent.SpawnDistance;
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		auto* SpawnedActor = GetWorld()->SpawnActor<ASurvivorEnemyBase>(
+		ASurvivorEnemyBase* SpawnedActor = GetWorld()->SpawnActor<ASurvivorEnemyBase>(
 			WaveEvent.EnemyClass,
 			SpawnLocation,
 			Direction.Rotation(),
 			SpawnParams
 		);
 		if (SpawnedActor) {
+			SpawnedActor->HealthComponent->SetMaxHealth(SpawnedActor->HealthComponent->MaxHealth * EnemyHealthScale); ;
+
 			//기본 컨트롤러 미할당 시 움직이지 않음
 			SpawnedActor->SpawnDefaultController();
 			SpawnedActor->SetActorTickEnabled(true);
@@ -172,7 +176,7 @@ void AEnemySpawner::SpawnCircleWave(const FVSWaveSpawnEvent& WaveEvent)
 
 void AEnemySpawner::SpawnLineWave(const FVSWaveSpawnEvent& WaveEvent)
 {
-	//박쥐떼(Bat Swarm)
+	//박쥐떼(Bat Swarm)? 일자로 스폰후 직진만하도록함
 	if (!TargetPlayer || !WaveEvent.EnemyClass)
 	{
 		return;
@@ -201,6 +205,7 @@ void AEnemySpawner::SpawnLineWave(const FVSWaveSpawnEvent& WaveEvent)
 		);
 
 		if (SpawnedActor) {
+			SpawnedActor->HealthComponent->SetMaxHealth(SpawnedActor->HealthComponent->MaxHealth * EnemyHealthScale); ;
 			SpawnedActor->SpawnDefaultController();
 			SpawnedActor->SetActorTickEnabled(true);
 		}

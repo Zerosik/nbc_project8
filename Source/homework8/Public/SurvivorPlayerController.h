@@ -6,10 +6,12 @@
 #include "GameFramework/PlayerController.h"
 #include "SurvivorPlayerController.generated.h"
 
-
+class UUpgradeDataAsset;
 class UInputMappingContext;
 class UInputAction;
 class UResultWidget;
+class UGameHUDWidget;
+class USurvivorLevelUpWidget;
 struct FInputActionValue;
 
 UCLASS()
@@ -28,8 +30,8 @@ public:
 	UInputAction* ManualAttackAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PauseGameAction;
-#pragma endregion
-#pragma region UI
+#pragma endregion INPUTS
+#pragma region UI_Class
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> LevelUPMenuWidgetClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
@@ -38,7 +40,7 @@ public:
 	TSubclassOf<UUserWidget> ResultWidgetClass;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<UUserWidget> GameHUDWidgetClass;
-#pragma endregion
+#pragma endregion UI_Class
 
 protected:
 	virtual void SetupInputComponent() override;
@@ -54,7 +56,7 @@ public:
 
 	//UI관련 Public
 	UFUNCTION(BlueprintCallable, Category = "UserInterface")
-	void ShowLevelUPWidget();
+	void ShowLevelUPWidget(const TArray<UUpgradeDataAsset*>& UpgradeChoices);
 	UFUNCTION(BlueprintCallable, Category = "UserInterface")
 	void CloseLevelUPWidget();
 
@@ -78,8 +80,9 @@ private:
 
 	/*FTimerHandle UpdateElapsedTimeHandle;*/
 
+#pragma region Widget
 	UPROPERTY(VisibleAnywhere, Category = "UI")
-	UUserWidget* LevelUPMenuWidgetInstance;
+	USurvivorLevelUpWidget* LevelUPMenuWidgetInstance;
 
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	UUserWidget* PauseMenuWidgetInstance;
@@ -89,4 +92,5 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "UI")
 	UUserWidget* GameHUDWidgetInstance;
+#pragma endregion Widget
 };

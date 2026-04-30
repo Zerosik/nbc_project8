@@ -31,6 +31,7 @@ void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	LastAttackTime = CurrentTime;
 }
 
+
 AActor* UWeaponComponent::FindNearestEnemy() const
 {
 	AActor* Owner = GetOwner();
@@ -71,13 +72,83 @@ void UWeaponComponent::FireAtTarget(AActor* Target)
 	Direction.Normalize();
 
 	const FVector SpawnLocation = Owner->GetActorLocation() + Direction * SpawnOffset;
-	const FRotator SpawnRotation = Direction.Rotation();
+	const FRotator BaseRotation = Direction.Rotation();
 
-	GetWorld()->SpawnActor<AWeaponProjectile>(
-		ProjectileClass,
-		SpawnLocation,
-		SpawnRotation
-	);
+	const int32 SafeShotCount = FMath::Max(1, MultiShotCount);
 
+	for (int32 i = 0; i < SafeShotCount; ++i)
+	{
+		float AngleOffset = 0.0f;
+
+		if (SafeShotCount > 1)
+		{
+			const float CenterIndex = (SafeShotCount - 1) * 0.5f;
+			AngleOffset = (i - CenterIndex) * MultiShotAngle;
+		}
+
+		FRotator ShotRotation = BaseRotation;
+		ShotRotation.Yaw += AngleOffset;
+
+		AWeaponProjectile* Projectile = GetWorld()->SpawnActor<AWeaponProjectile>(
+			ProjectileClass,
+			SpawnLocation,
+			ShotRotation
+		);
+
+		if (Projectile)
+		{
+			Projectile->Damage = Damage;
+			Projectile->PierceCount = PierceCount;
+		}
+	}
+
+}
+
+void UWeaponComponent::ApplyWeaponUpgrade(EWeaponUpgradeStat StatType, EUpgradeValueType ValueType, float Value)
+{
+	switch (StatType)
+	{
+	case EWeaponUpgradeStat::Damage:
+		Damage = ApplyValue(Damage, ValueType, Value);
+		Damage = FMath::Max(0.0f, Damage);
+		break;
+
+	case EWeaponUpgradeStat::AttackCooldown:
+		AttackCooldown = ApplyValue(AttackCooldown, ValueType, Value);
+		AttackCooldown = FMath::Clamp(AttackCooldown, 0.05f, 10.0f);
+		break;
+
+	case EWeaponUpgradeStat::MultiShotCount:
+		MultiShotCount = FMath::RoundToInt(ApplyValue(static_cast<float>(MultiShotCount), ValueType, Value));
+		MultiShotCount = FMath::Clamp(MultiShotCount, 1, 20);
+		break;
+
+	case EWeaponUpgradeStat::PierceCount:
+		PierceCount = FMath::RoundToInt(ApplyValue(static_cast<float>(PierceCount), ValueType, Value));
+		PierceCount = FMath::Clamp(PierceCount, 0, 99);
+		break;
+
+	default:
+		break;
+	}
+}
+
+
+float UWeaponComponent::ApplyValue(float CurrentValue, EUpgradeValueType ValueType, float Value) const
+{
+	switch (ValueType)
+	{
+	case EUpgradeValueType::Add:
+		return CurrentValue + Value;
+
+	case EUpgradeValueType::Multiply:
+		return CurrentValue * Value;
+
+	case EUpgradeValueType::Set:
+		return Value;
+
+	default:
+		return CurrentValue;
+	}
 }
 

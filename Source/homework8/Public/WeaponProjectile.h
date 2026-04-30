@@ -23,18 +23,21 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	UProjectileMovementComponent* ProjectileMovement;
 
-	UPROPERTY(EditAnywhere)
-	float Damage = 25.f;
+	UPROPERTY(EditAnywhere, Category = "Weapon Stats")
+	float Damage = 10.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
 	float LifeTime = 10.f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	int32 PenetrateCount = 1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Weapon Stats")
+	int32 PierceCount = 1;
 
 protected:
 	virtual void BeginPlay() override;
 private:
+	UPROPERTY()
+	TArray<AActor*> HitActors;
+
     UFUNCTION()
     void OnProjectileOverlap(
         UPrimitiveComponent* OverlappedComponent,

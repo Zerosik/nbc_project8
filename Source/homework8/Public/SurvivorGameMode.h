@@ -7,6 +7,9 @@
 #include "SurvivorGameMode.generated.h"
 
 class AEnemySpawner;
+class Ahomework8Character;
+class UUpgradeDataAsset;
+class UUpgradeManager;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStageChanged, int32, NewLevelIndex);
 
@@ -20,10 +23,20 @@ public:
     virtual void BeginPlay() override;
     virtual void Tick(float DeltaTime) override;
 
-    UPROPERTY(EditAnywhere, BlueprintReadOnly)
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+    UUpgradeManager* UpgradeManager;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
     TSubclassOf< AEnemySpawner> SpawnerClass;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly)
     float ClearTime = 30.f;
+    
+    UFUNCTION(BlueprintCallable)
+    void OnPlayerLevelUp(int32 NewLevel);
+
+    UFUNCTION(BlueprintCallable)
+    void SelectUpgrade(UUpgradeDataAsset* SelectedUpgrade);
 
     UFUNCTION(BlueprintCallable)
     void StartRun();
@@ -33,11 +46,18 @@ public:
 
     UPROPERTY(BlueprintAssignable)
     FOnStageChanged OnStageChanged;
+
 private:
     UPROPERTY()
     class AEnemySpawner* EnemySpawner;
+    UPROPERTY()
+    Ahomework8Character* CachedPlayer;
 
+    UPROPERTY()
+    TArray<UUpgradeDataAsset*> CurrentUpgradeChoices;
     bool bRunEnded = false;
+
+    void BindPlayerEvents();
 
     void CreateSpawnerIfNeeded();
 

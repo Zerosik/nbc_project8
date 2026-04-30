@@ -7,8 +7,6 @@
 AEnemy_Bat::AEnemy_Bat()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	MaxHealth = 5;
-	MoveSpeed = 500;
 }
 
 void AEnemy_Bat::BeginPlay()
@@ -20,18 +18,20 @@ void AEnemy_Bat::BeginPlay()
 	if (!direction.IsNearlyZero())
 		direction.Normalize();
 	SetActorTickEnabled(true);
+	SetLifeSpan(10);
 }
 
 void AEnemy_Bat::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	MoveToDirection(DeltaSeconds);
+	
 }
 
 
 void AEnemy_Bat::MoveToDirection(float DeltaTime)
 {
-	//방향안바꾸고 직진갈김
+	//방향안바꾸고 직진함
 	AddMovementInput(direction, 1.f);
 }
 

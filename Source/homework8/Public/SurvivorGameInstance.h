@@ -45,16 +45,36 @@ struct FPlayerRunStatus
     float CurrentHealth = 100.0f;
 
 };
+USTRUCT(BlueprintType)
+struct FPlayerWeaponStatus
+{
+    GENERATED_BODY()
 
+    UPROPERTY(BlueprintReadWrite)
+    float Damage = 10;
+
+    UPROPERTY(BlueprintReadWrite)
+    int32 MultiShotCount = 1;
+
+    UPROPERTY(BlueprintReadWrite)
+    int32 PierceCount = 1;
+
+    UPROPERTY(BlueprintReadWrite)
+    float MultiShotAngle = 12.f;
+
+};
 UCLASS()
 class HOMEWORK8_API USurvivorGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:
 	USurvivorGameInstance();
-
+    
     UPROPERTY(BlueprintReadOnly)
     FPlayerRunStatus PrevPlayerStatus;
+    
+    UPROPERTY(BlueprintReadOnly)
+    FPlayerWeaponStatus PrevWeaponStatus;
 
     UPROPERTY(BlueprintReadOnly)
 	int32 TotalGold; //영구적 업그레이드에 사용
@@ -73,6 +93,12 @@ public:
 
     UFUNCTION(BlueprintCallable)
     FPlayerRunStatus GetPrevPlayerStatus();
+    
+    UFUNCTION(BlueprintCallable)
+    void SetPrevWeaponStatus();
+    
+    UFUNCTION(BlueprintCallable)
+    FPlayerWeaponStatus GetPrevWeaponStatus();
 
     UFUNCTION(BlueprintCallable)
     void StartNewRun(); //result 초기화 및 처음부터

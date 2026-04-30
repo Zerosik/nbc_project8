@@ -19,6 +19,14 @@ void UHealthComponent::BeginPlay()
 	OnHealthChanged.Broadcast(CurrentHealth, MaxHealth);
 }
 
+void UHealthComponent::SetMaxHealth(float newHealth)
+{
+	MaxHealth = newHealth;
+	CurrentHealth = MaxHealth;
+	bDead = false;
+	OnHealthChanged.Broadcast(CurrentHealth, MaxHealth);
+}
+
 void UHealthComponent::TakeDamageValue(float Damage)
 {
 	if (bDead || Damage <= 0.0f)

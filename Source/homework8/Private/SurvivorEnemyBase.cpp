@@ -12,10 +12,22 @@
 // Sets default values
 ASurvivorEnemyBase::ASurvivorEnemyBase()
 {
+	MaxHealth = 10;
+	MoveSpeed = 250;
+	ContractGamage = 5.f;
+	DamageInterval = .5;
+	ExpDrop = 1;
+
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-	HealthComponent->MaxHealth = MaxHealth;
 	HealthComponent->OnDeath.AddDynamic(this, &ASurvivorEnemyBase::HandleDeath);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ASurvivorEnemyBase::OnPlayerOverlap);
+
+}
+
+void ASurvivorEnemyBase::BeginPlay()
+{
+	Super::BeginPlay();
+	HealthComponent->MaxHealth = MaxHealth;
 	if (GetCharacterMovement()) {
 		//#include "GameFramework/CharacterMovementComponent.h"
 		GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;

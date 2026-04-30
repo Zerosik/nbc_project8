@@ -34,6 +34,7 @@ void AWeaponProjectile::BeginPlay()
 
     Collision->OnComponentBeginOverlap.AddDynamic(this, &AWeaponProjectile::OnProjectileOverlap);
     //액터의 수명을 결정하는 기본함수, lifeSpan초 후 자동 Destroy
+    //지속시간을 넣는것도?
     SetLifeSpan(LifeTime);
 	
 }
@@ -49,8 +50,12 @@ void AWeaponProjectile::OnProjectileOverlap(
     ASurvivorEnemyBase* Enemy = Cast<ASurvivorEnemyBase>(OtherActor);
     if (!Enemy)
         return;
+    if (HitActors.Contains(Enemy))
+        return;
+    HitActors.Add(Enemy);
+
     Enemy->HealthComponent->TakeDamageValue(Damage);
-    PenetrateCount--;
-    if (PenetrateCount <= 0)
+    PierceCount--;
+    if (PierceCount <= 0)
         Destroy();
 }

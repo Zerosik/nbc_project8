@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "ExperienceComponent.h"
 #include "HealthComponent.h"
+#include "WeaponComponent.h"
 #include "homework8/homework8Character.h"
 
 USurvivorGameInstance::USurvivorGameInstance()
@@ -27,6 +28,23 @@ void USurvivorGameInstance::SetPrevPlayerStatus()
 FPlayerRunStatus USurvivorGameInstance::GetPrevPlayerStatus()
 {
 	return PrevPlayerStatus;
+}
+
+void USurvivorGameInstance::SetPrevWeaponStatus()
+{
+	Ahomework8Character* Character = Cast<Ahomework8Character>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	if (Character) {
+
+		PrevWeaponStatus.Damage = Character->WeaponComponent->Damage;
+		PrevWeaponStatus.MultiShotCount = Character->WeaponComponent->MultiShotCount;
+		PrevWeaponStatus.PierceCount = Character->WeaponComponent->PierceCount;
+		PrevWeaponStatus.MultiShotAngle = Character->WeaponComponent->MultiShotAngle;
+	}
+}
+
+FPlayerWeaponStatus USurvivorGameInstance::GetPrevWeaponStatus()
+{
+	return PrevWeaponStatus;
 }
 
 void USurvivorGameInstance::StartNewRun()

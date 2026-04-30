@@ -8,6 +8,7 @@
 #include "SurvivorGameInstance.h"
 #include "ExperienceComponent.h"
 #include "homework8/homework8Character.h"
+#include "UpgradeManager.h"
 
 ASurvivorGameMode::ASurvivorGameMode()
 {
@@ -15,6 +16,7 @@ ASurvivorGameMode::ASurvivorGameMode()
 
 	PlayerControllerClass = ASurvivorPlayerController::StaticClass();
 	GameStateClass = ASurvivorGameState::StaticClass();
+	UpgradeManager = CreateDefaultSubobject<UUpgradeManager>(TEXT("UpgradeManager"));
 
 	//기본생성 탑뷰캐릭터 일단 그대로 사용함.
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/TopDown/Blueprints/BP_TopDownCharacter"));
@@ -30,6 +32,7 @@ void ASurvivorGameMode::BeginPlay()
 
 	GEngine->AddOnScreenDebugMessage(-1, 5, FColor::White, FString::Printf(TEXT("GameMode BeginPlay")));
 	StartRun();
+	BindPlayerEvents();
 }
 
 void ASurvivorGameMode::Tick(float DeltaTime)
@@ -46,6 +49,48 @@ void ASurvivorGameMode::Tick(float DeltaTime)
 		EndRun(true);
 	}
 
+}
+
+void ASurvivorGameMode::OnPlayerLevelUp(int32 NewLevel)
+{
+	if (!UpgradeManager || !CachedPlayer)
+		return;
+
+	CurrentUpgradeChoices = UpgradeManager->GenerateUpgradeChoices(3, NewLevel);
+
+	if (CurrentUpgradeChoices.Num() <= 0)
+		return;
+
+	ASurvivorPlayerController* PC = Cast<ASurvivorPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (!PC)
+		return;
+
+	// 먼저 Pause
+	UGameplayStatics::SetGamePaused(this, true);
+
+	PC->ShowLevelUPWidget(CurrentUpgradeChoices);
+}
+
+
+void ASurvivorGameMode::SelectUpgrade(UUpgradeDataAsset* SelectedUpgrade)
+{
+	if (!SelectedUpgrade || !UpgradeManager || !CachedPlayer)
+	{
+		UGameplayStatics::SetGamePaused(this, false);
+		return;
+	}
+
+	UpgradeManager->ApplyUpgrade(SelectedUpgrade, CachedPlayer);
+
+	CurrentUpgradeChoices.Empty();
+
+	ASurvivorPlayerController* PC = Cast<ASurvivorPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	if (PC)
+	{
+		PC->CloseLevelUPWidget();
+	}
+
+	UGameplayStatics::SetGamePaused(this, false);
 }
 
 void ASurvivorGameMode::StartRun()
@@ -92,6 +137,17 @@ void ASurvivorGameMode::EndRun(bool bVictory)
 
 }
 
+void ASurvivorGameMode::BindPlayerEvents()
+{
+	CachedPlayer = Cast<Ahomework8Character>(UGameplayStatics::GetPlayerCharacter(this, 0));
+	if (!CachedPlayer || !CachedPlayer->ExperienceComponent)
+	{
+		return;
+	}
+
+	CachedPlayer->ExperienceComponent->OnLevelUp.AddDynamic(this, &ASurvivorGameMode::OnPlayerLevelUp);
+}
+
 void ASurvivorGameMode::CreateSpawnerIfNeeded()
 {
 	if (EnemySpawner || !SpawnerClass)
@@ -125,6 +181,7 @@ void ASurvivorGameMode::HandleStageClear()
 // 		GI->PlayerExpLastStage = Player->ExperienceComponent->CurrentExp;
 // 		GI->PlayerLevelLastStage = Player->ExperienceComponent->CurrentLevel;
 		GI->SetPrevPlayerStatus();
+		GI->SetPrevWeaponStatus();
 	}
 
 	if (GI->HasNextStage())
@@ -154,7 +211,7 @@ void ASurvivorGameMode::HandlePlayerDead()
 	if (GI)
 	{
 		GI->SetRunVictory(false);
-		GI->SetPrevPlayerStatus();
+		//GI->SetPrevPlayerStatus();
 
 	}
 

@@ -64,6 +64,8 @@ public:
 	float SpawnDistance = 2000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int MaxEnemyCount = 100;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float EnemyHealthScale = 1.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Wave Events")
     TArray<FVSWaveSpawnEvent> WaveEvents;

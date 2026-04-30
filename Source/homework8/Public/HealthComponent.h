@@ -22,6 +22,9 @@ public:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
+	void SetMaxHealth(float newHealth);
+
+	UFUNCTION(BlueprintCallable)
 	void TakeDamageValue(float Damage);
 
 	UFUNCTION(BlueprintCallable)

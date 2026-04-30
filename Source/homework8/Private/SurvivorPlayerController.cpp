@@ -1,6 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
+#include "SurvivorPlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
@@ -11,8 +12,8 @@
 #include "MainMenuPlayerController.h"
 #include "SurvivorGameState.h"
 #include "SurvivorGameInstance.h"
+#include "SurvivorLevelUpWidget.h"
 #include "ResultWidget.h"
-#include "SurvivorPlayerController.h"
 
 ASurvivorPlayerController::ASurvivorPlayerController()
 {
@@ -35,10 +36,7 @@ void ASurvivorPlayerController::SetupInputComponent()
         EnhancedInputComponent->BindAction(ManualAttackAction, ETriggerEvent::Triggered, this, &ASurvivorPlayerController::OnManualAttackTriggered);
         EnhancedInputComponent->BindAction(ManualAttackAction, ETriggerEvent::Completed, this, &ASurvivorPlayerController::OnMoveCompleted);
 
-
         EnhancedInputComponent->BindAction(PauseGameAction, ETriggerEvent::Started, this, &ASurvivorPlayerController::TogglePauseWidget);
-        
-
 	}
 }
 
@@ -56,7 +54,6 @@ void ASurvivorPlayerController::OnMoveTriggered(const FInputActionValue& value)
     if (moveInput.IsNearlyZero())
         return;
 	
-
     APawn* controlledPawn = GetPawn();
 
     float DeltaTime = GetWorld()->GetDeltaSeconds();
@@ -111,12 +108,32 @@ void ASurvivorPlayerController::OnManualAttackTriggered(const FInputActionValue&
     */
 }
 
-void ASurvivorPlayerController::ShowLevelUPWidget()
+void ASurvivorPlayerController::ShowLevelUPWidget(const TArray<UUpgradeDataAsset*>& UpgradeChoices)
 {
+    bShowMouseCursor = true;
+    SetInputMode(FInputModeUIOnly());
+
+    if (!LevelUPMenuWidgetInstance && LevelUPMenuWidgetClass)
+    {
+        LevelUPMenuWidgetInstance = CreateWidget<USurvivorLevelUpWidget>(this, LevelUPMenuWidgetClass);
+    }
+
+    if (LevelUPMenuWidgetInstance)
+    {
+        LevelUPMenuWidgetInstance->SetupChoices(UpgradeChoices);
+        LevelUPMenuWidgetInstance->AddToViewport();
+    }
 }
 
 void ASurvivorPlayerController::CloseLevelUPWidget()
 {
+    if (LevelUPMenuWidgetInstance)
+    {
+        LevelUPMenuWidgetInstance->RemoveFromParent();
+    }
+
+    bShowMouseCursor = true;
+    SetInputMode(FInputModeGameOnly());
 }
 
 void ASurvivorPlayerController::TogglePauseWidget()
@@ -148,6 +165,10 @@ void ASurvivorPlayerController::TogglePauseWidget()
 
 void ASurvivorPlayerController::ShowResultWidget(bool bVictory)
 {
+    CloseLevelUPWidget();
+
+    SetPause(true);
+
     USurvivorGameInstance* SGI = Cast<USurvivorGameInstance>(GetGameInstance());
     ASurvivorGameState* AGS = GetWorld()->GetGameState<ASurvivorGameState>();
     ClearUI();
@@ -163,6 +184,7 @@ void ASurvivorPlayerController::ShowResultWidget(bool bVictory)
 
 void ASurvivorPlayerController::CloseResultWidget()
 {
+    //위젯 버튼으로 대체
 }
 
 void ASurvivorPlayerController::ShowGameHUD()
